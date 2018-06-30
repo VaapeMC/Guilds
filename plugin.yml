@@ -1,0 +1,8 @@
+name: Guilds
+main: me.vaape.guilds.Guilds
+version: 1.0
+commands:
+  guild:
+  g:
+  gc:
+  ac:
