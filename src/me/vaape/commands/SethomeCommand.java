@@ -25,7 +25,7 @@ Guilds plugin;
 		if (GuildManager.getPlayerGuildTag(UUID) != null) {
 			String tag = GuildManager.getPlayerGuildTag(UUID);
 			if (GuildManager.getLevel(tag) > 2) {
-				if (GuildManager.getRole(UUID).equals("leader") || GuildManager.getRole(UUID).equals("officer")) {
+				if (GuildManager.getRole(UUID).equals("leader") || GuildManager.getRole(UUID).equals("elder")) {
 					Location location = player.getLocation();
 					String tagLower = tag.toLowerCase();
 					GuildManager.setHome(location, tagLower);
@@ -43,7 +43,7 @@ Guilds plugin;
 					}
 				}
 				else {
-					player.sendMessage(ChatColor.BLUE + "You must be a leader or an officer to set the guild's home.");
+					player.sendMessage(ChatColor.BLUE + "You must be a leader or an elder to set the guild's home.");
 				}
 			}
 			else {

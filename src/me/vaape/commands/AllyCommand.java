@@ -18,14 +18,13 @@ public class AllyCommand {
 	public AllyCommand(Guilds plugin) {
 		this.plugin = plugin;
 	}
-	//TODO fix it its fucked
 	public void executeAllyCommand (Player player, String[] args) {
 		String UUID = player.getUniqueId().toString();
 		if (GuildManager.getPlayerGuildTag(UUID) != null) {
 			String tag = GuildManager.getPlayerGuildTag(UUID);
 			String tagLower = tag.toLowerCase();
 			String name = GuildManager.getGuildName(tagLower);
-			if (GuildManager.isLeader(UUID) || GuildManager.isOfficer(UUID)) {
+			if (GuildManager.isLeader(UUID) || GuildManager.isElder(UUID)) {
 				if (args.length > 2) {
 					String rTagLower = args[2].toLowerCase();
 					String rTag = GuildManager.getGuildTag(rTagLower);
@@ -46,8 +45,8 @@ public class AllyCommand {
 											for (Player guildPlayer: onlinePlayers) {
 												if (Bukkit.getServer().getOnlinePlayers().contains(guildPlayer)) {
 													if (GuildManager.getGuildPlayers(rTagLower).contains(guildPlayer.getUniqueId().toString())) {
-														if (GuildManager.isLeader(guildPlayer.getUniqueId().toString()) || GuildManager.isOfficer(guildPlayer.getUniqueId().toString())) {
-															guildPlayer.sendMessage(ChatColor.BLUE + "[" + rTag + "] " + ChatColor.LIGHT_PURPLE + GuildManager.getGuildName(tag)  + " have sent you an alliance request, type " + ChatColor.GREEN +"/guild ally accept " + tag + ChatColor.LIGHT_PURPLE + " to accept.");
+														if (GuildManager.isLeader(guildPlayer.getUniqueId().toString()) || GuildManager.isElder(guildPlayer.getUniqueId().toString())) {
+															guildPlayer.sendMessage(ChatColor.BLUE + "[" + rTag + "] " + ChatColor.LIGHT_PURPLE + GuildManager.getGuildName(tag)  + " have sent you an alliance request, type " + ChatColor.GREEN +"/g ally accept " + tag + ChatColor.LIGHT_PURPLE + " to accept.");
 															guildPlayer.playSound(guildPlayer.getLocation(), Sound.BLOCK_END_PORTAL_FRAME_FILL, 1f, 1f);
 														}
 													}
@@ -71,8 +70,8 @@ public class AllyCommand {
 											for (Player guildPlayer: onlinePlayers) {
 												if (Bukkit.getServer().getOnlinePlayers().contains(guildPlayer)) {
 													if (GuildManager.getGuildPlayers(rTagLower).contains(guildPlayer.getUniqueId().toString())) {
-														if (GuildManager.isLeader(guildPlayer.getUniqueId().toString()) || GuildManager.isOfficer(guildPlayer.getUniqueId().toString())) {
-															guildPlayer.sendMessage(ChatColor.BLUE + "[" + rTag + "] " + ChatColor.LIGHT_PURPLE + GuildManager.getGuildName(tag)  + " have sent you an alliance request, type " + ChatColor.LIGHT_PURPLE +"/guild ally accept " + tag + ChatColor.BLUE + "to accept.");
+														if (GuildManager.isLeader(guildPlayer.getUniqueId().toString()) || GuildManager.isElder(guildPlayer.getUniqueId().toString())) {
+															guildPlayer.sendMessage(ChatColor.BLUE + "[" + rTag + "] " + ChatColor.LIGHT_PURPLE + GuildManager.getGuildName(tag)  + " have sent you an alliance request, type " + ChatColor.LIGHT_PURPLE +"/g ally accept " + tag + ChatColor.BLUE + "to accept.");
 															guildPlayer.playSound(guildPlayer.getLocation(), Sound.BLOCK_END_PORTAL_FRAME_FILL, 1f, 1f);
 														}
 													}
@@ -130,7 +129,7 @@ public class AllyCommand {
 					else if (args[1].equalsIgnoreCase("accept")) {
 						if (rTag != null) {
 							int level = GuildManager.getLevel(tagLower);
-							if (plugin.getConfig().getStringList("guilds." + tag + ".requests").contains(rTag)) {
+							if (plugin.getConfig().getStringList("guilds." + tagLower + ".requests").contains(rTag)) {
 								if (allies.size() == 0) {
 									if (level > 1) {
 										GuildManager.allyAccept(tag, rTag);
@@ -192,7 +191,7 @@ public class AllyCommand {
 				}
 			}
 			else {
-				player.sendMessage(ChatColor.RED + "You must be a leader or an officer to ally other guilds.");
+				player.sendMessage(ChatColor.RED + "You must be a leader or an elder to ally other guilds.");
 			}
 		}
 		else {

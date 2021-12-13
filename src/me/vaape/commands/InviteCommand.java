@@ -22,7 +22,7 @@ public class InviteCommand {
 	public void executeInviteCommand (Player sender, String[] args) {
 		String UUID = sender.getUniqueId().toString();
 		if (GuildManager.getPlayerGuildTag(UUID) != null) {
-			if (GuildManager.isLeader(UUID) || GuildManager.isOfficer(UUID)) {
+			if (GuildManager.isLeader(UUID) || GuildManager.isElder(UUID)) {
 				if (args.length > 1) {
 					Player reciever = Bukkit.getServer().getPlayer(args[1]);
 					String tag = GuildManager.getPlayerGuildTag(UUID);
@@ -37,7 +37,7 @@ public class InviteCommand {
 								if (totalPlayers < capacity) {
 									if (!plugin.getConfig().getStringList("guilds." + tagLower + ".invited").contains(UUID)) {
 										GuildManager.invite(rUUID, tag);
-										reciever.sendMessage(ChatColor.BLUE + sender.getName() + " has invited you to join " + name + ", type" + ChatColor.GREEN + " /guild accept " + tag + ChatColor.BLUE + " to join. This invitation will expire in 2 minutes.");
+										reciever.sendMessage(ChatColor.BLUE + sender.getName() + " has invited you to join " + name + ", type" + ChatColor.GREEN + " /g accept " + tag + ChatColor.BLUE + " to join. This invitation will expire in 2 minutes.");
 										reciever.playSound(reciever.getLocation(), Sound.BLOCK_END_PORTAL_FRAME_FILL, 1f, 1f);
 										List<Player> onlinePlayers = new ArrayList<Player>();
 										for (Player p : Bukkit.getServer().getOnlinePlayers()) {
@@ -76,7 +76,7 @@ public class InviteCommand {
 				}
 			}
 			else {
-				sender.sendMessage(ChatColor.RED + "You must be a leader or an officer to invite new recruits.");
+				sender.sendMessage(ChatColor.RED + "You must be a leader or an elder to invite new recruits.");
 			}
 		}
 		else {

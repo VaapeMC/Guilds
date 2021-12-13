@@ -46,21 +46,9 @@ public class CreateCommand {
 								if (name.length() < 21) {
 									Matcher nameMatcher = pattern.matcher(name);
 									if (nameMatcher.matches()) {
-										if (hand != null && hand.getType() != Material.AIR) {
-											if (hand.getType() == Material.DRAGON_EGG) {
-												hand.setAmount(hand.getAmount() - 1);
-												player.getInventory().setItemInMainHand(hand);
-												GuildManager.createClan(UUID, tag, name);
-												Bukkit.getServer().broadcastMessage(ChatColor.BLUE + "[Guilds] " + ChatColor.GREEN + player.getName() + " has created the guild " + name + ".");
-												player.playSound(player.getLocation(), Sound.BLOCK_END_PORTAL_FRAME_FILL, 1f, 1f);
-											}
-											else {
-												player.sendMessage(ChatColor.RED + "You need a dragon egg to create a guild.");
-											}
-										}
-										else {
-											player.sendMessage(ChatColor.RED + "You need a dragon egg to create a guild.");
-										}
+										GuildManager.createClan(UUID, tag, name);
+										Bukkit.getServer().broadcastMessage(ChatColor.BLUE + "[Guilds] " + ChatColor.GREEN + player.getName() + " has created the guild " + name + ".");
+										player.playSound(player.getLocation(), Sound.BLOCK_END_PORTAL_FRAME_FILL, 1f, 1f);
 									}
 									else {
 										player.sendMessage(ChatColor.RED + "Guilds name can not contain special charcters.");

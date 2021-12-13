@@ -10,6 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 import me.vaape.guilds.GuildManager;
 import me.vaape.guilds.Guilds;
@@ -45,21 +46,21 @@ public static Map<String, Integer> tasks = new HashMap<String, Integer>();
 							public void run() {
 								player.sendMessage(ChatColor.BLUE + "Teleporting to guild home...");
 								tasks.remove(UUID);
-								player.teleport(guildHome);
+								player.teleport(guildHome, TeleportCause.COMMAND);
 							}
 						}, 5 * 20);
 						tasks.put(UUID, home);
 					}
 					else {
-						player.sendMessage(ChatColor.RED + "Your guild does not have a guild home set. Use /guild sethome to set a new one.");
+						player.sendMessage(ChatColor.RED + "Your guild does not have a guild home set. Use /g sethome to set a new one.");
 					}
 				}
 				else {
-					player.sendMessage(ChatColor.RED + "You must be a member or above to use /guild home.");
+					player.sendMessage(ChatColor.RED + "You must be a member or above to use /g home.");
 				}
 			}
 			else {
-				player.sendMessage(ChatColor.RED + "You guild must be level 3 to use /guild home.");
+				player.sendMessage(ChatColor.RED + "You guild must be level 3 to use /g home.");
 			}
 		}
 		else {

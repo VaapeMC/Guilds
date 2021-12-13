@@ -12,7 +12,11 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
+import me.vaape.commands.ChatCommand;
+import me.vaape.events.Fishing;
+import me.vaape.events.GuildWars;
 import net.md_5.bungee.api.ChatColor;
 
 public class GuildManager {
@@ -28,8 +32,8 @@ public class GuildManager {
 			if (UUID.equals(config.getString("guilds." + key + ".leader"))) {
 				return config.getString("guilds." + key + ".tag");
 			}
-			for (String officerUUID : config.getStringList("guilds." + key + ".officers")) {
-				if (officerUUID.equals(UUID)) {
+			for (String elderUUID : config.getStringList("guilds." + key + ".elders")) {
+				if (elderUUID.equals(UUID)) {
 					return config.getString("guilds." + key + ".tag");
 				}
 			}
@@ -91,7 +95,7 @@ public class GuildManager {
 		config.set("guilds." + tagLower + ".home.yaw", null);
 		config.set("guilds." + tagLower + ".home.pitch", null);
 		config.set("guilds." + tagLower + ".leader", UUID);
-		config.set("guilds." + tagLower + ".officers", Arrays.asList(emptyList));
+		config.set("guilds." + tagLower + ".elders", Arrays.asList(emptyList));
 		config.set("guilds." + tagLower + ".members", Arrays.asList(emptyList));
 		config.set("guilds." + tagLower + ".recruits", Arrays.asList(emptyList));
 		config.set("guilds." + tagLower + ".invited", Arrays.asList(emptyList));
@@ -101,6 +105,15 @@ public class GuildManager {
 	}
 	
 	public static void leaveGuild(String UUID) {
+		if (GuildWars.holders.contains(UUID)) {
+			GuildWars.holders.remove(UUID);
+		}
+		if (ChatCommand.allyChat.contains(UUID)) {
+			ChatCommand.allyChat.remove(UUID);
+		}
+		else if (ChatCommand.guildChat.contains(UUID)) {
+			ChatCommand.guildChat.remove(UUID);
+		}
 		String tag = getPlayerGuildTag(UUID);
 		String tagLower = tag.toLowerCase();
 		String role = getRole(UUID);
@@ -111,6 +124,9 @@ public class GuildManager {
 	}
 	
 	public static void kick(String UUID, String tag) {
+		if (GuildWars.holders.contains(UUID)) {
+			GuildWars.holders.remove(UUID);
+		}
 		String role = GuildManager.getRole(UUID);
 		config.getList("guilds." + tag + "." + role + "s").remove(UUID);
 		Guilds.instance.saveConfig();
@@ -133,8 +149,8 @@ public class GuildManager {
 			if (isLeader(UUID)) {
 				return "leader";
 			}
-			if (isOfficer(UUID)) {
-				return "officer";
+			if (isElder(UUID)) {
+				return "elder";
 			}
 			if (isMember(UUID)) {
 				return "member";
@@ -150,9 +166,17 @@ public class GuildManager {
 		String tagLower = tag.toLowerCase();
 		List<String> players = getGuildPlayers(tagLower);
 		for (String playerUUID : players) {
-			if (Bukkit.getServer().getPlayer(UUID.fromString(playerUUID)).isOnline()) {
+			if (Bukkit.getServer().getPlayer(UUID.fromString(playerUUID)) != null) {
 				Player guildPlayer = Bukkit.getServer().getPlayer(UUID.fromString(playerUUID));
-				guildPlayer.sendMessage(ChatColor.GREEN + "[" + tag + "] " + ChatColor.WHITE + player.getDisplayName() + ChatColor.GRAY + " " + message);
+				if (Fishing.isWinner(player)) {
+					String symbol = "\u2742";
+					guildPlayer.sendMessage(ChatColor.GREEN + "[" + tag + "] " + ChatColor.YELLOW + symbol + " " + ChatColor.RESET + player.getDisplayName() + ChatColor.GRAY + " " + message);
+					Bukkit.getLogger().info(ChatColor.GREEN + "[" + tag + "] " + ChatColor.YELLOW + symbol + " " + ChatColor.RESET + player.getDisplayName() + ChatColor.GRAY + " " + message);
+				}
+				else {
+					guildPlayer.sendMessage(ChatColor.GREEN + "[" + tag + "] " + ChatColor.RESET + player.getDisplayName() + ChatColor.GRAY + " " + message);
+					Bukkit.getLogger().info(ChatColor.GREEN + "[" + tag + "] " + ChatColor.YELLOW + " " + ChatColor.RESET + player.getDisplayName() + ChatColor.GRAY + " " + message);
+				}
 			}
 		}
 	}
@@ -161,9 +185,17 @@ public class GuildManager {
 		String tagLower = tag.toLowerCase();
 		List<String> players = getAllyPlayers(tagLower);
 		for (String playerUUID : players) {
-			if (Bukkit.getServer().getPlayer(UUID.fromString(playerUUID)).isOnline()) {
+			if (Bukkit.getServer().getPlayer(UUID.fromString(playerUUID)) != null) {
 				Player guildPlayer = Bukkit.getServer().getPlayer(UUID.fromString(playerUUID));
-				guildPlayer.sendMessage(ChatColor.LIGHT_PURPLE + "[" + tag + "] " + ChatColor.WHITE + player.getDisplayName() + ChatColor.GRAY + " " + message);
+				if (Fishing.isWinner(player)) {
+					String symbol = "\u2742";
+					guildPlayer.sendMessage(ChatColor.LIGHT_PURPLE + "[" + tag + "] " + ChatColor.YELLOW + symbol + " " + ChatColor.RESET + player.getDisplayName() + ChatColor.GRAY + " " + message);
+					Bukkit.getLogger().info(ChatColor.LIGHT_PURPLE + "[" + tag + "] " + ChatColor.YELLOW + symbol + " " + ChatColor.RESET + player.getDisplayName() + ChatColor.GRAY + " " + message);
+				}
+				else {
+					guildPlayer.sendMessage(ChatColor.LIGHT_PURPLE + "[" + tag + "] " + ChatColor.RESET + player.getDisplayName() + ChatColor.GRAY + " " + message);
+					Bukkit.getLogger().info(ChatColor.LIGHT_PURPLE + "[" + tag + "] " + ChatColor.YELLOW + " " + ChatColor.RESET + player.getDisplayName() + ChatColor.GRAY + " " + message);
+				}
 			}
 		}
 	}
@@ -171,11 +203,11 @@ public class GuildManager {
 	public static List<String> getGuildPlayers (String tag) {
 		String tagLower = tag.toLowerCase();
 		List<String> players = new ArrayList<String>();
-		List<String> officers = config.getStringList("guilds." + tagLower + ".members");
-		List<String> members = config.getStringList("guilds." + tagLower + ".officers");
+		List<String> elders = config.getStringList("guilds." + tagLower + ".members");
+		List<String> members = config.getStringList("guilds." + tagLower + ".elders");
 		List<String> recruits = config.getStringList("guilds." + tagLower + ".recruits");
 		players.add(getGuildLeader(tagLower));
-		players.addAll(officers);
+		players.addAll(elders);
 		players.addAll(members);
 		players.addAll(recruits);
 		return players;
@@ -197,12 +229,12 @@ public class GuildManager {
 	public static void promote(String UUID, String tag) {
 		String role = getRole(UUID);
 		String tagLower = tag.toLowerCase();
-		if (role.equals("officer")) {
+		if (role.equals("elder")) {
 			String leader = config.getString("guilds." + tagLower + ".leader");
-			final List<String> officers = config.getStringList("guilds." + tagLower + ".officers");
-			officers.add(leader);
-			officers.remove(UUID);
-			config.set("guilds." + tagLower + ".officers", officers);
+			final List<String> elders = config.getStringList("guilds." + tagLower + ".elders");
+			elders.add(leader);
+			elders.remove(UUID);
+			config.set("guilds." + tagLower + ".elders", elders);
 			config.set("guilds." + tagLower + ".leader", UUID);
 			Guilds.instance.saveConfig();
 		}
@@ -210,9 +242,9 @@ public class GuildManager {
 			final List<String> members = config.getStringList("guilds." + tagLower + ".members");
 			members.remove(UUID);
 			config.set("guilds." + tagLower + ".members", members);
-			final List<String> officers = config.getStringList("guilds." + tagLower + ".officers");
-			officers.add(UUID);
-			config.set("guilds." + tagLower + ".officers", officers);
+			final List<String> elders = config.getStringList("guilds." + tagLower + ".elders");
+			elders.add(UUID);
+			config.set("guilds." + tagLower + ".elders", elders);
 			Guilds.instance.saveConfig();
 			
 		}
@@ -230,10 +262,10 @@ public class GuildManager {
 	public static void demote(String UUID, String tag) {
 		String role = getRole(UUID);
 		String tagLower = tag.toLowerCase();
-		if (role.equals("officer")) {
-			final List<String> officers = config.getStringList("guilds." + tagLower + ".officers");
-			officers.remove(UUID);
-			config.set("guilds." + tagLower + ".officers", officers);
+		if (role.equals("elder")) {
+			final List<String> elders = config.getStringList("guilds." + tagLower + ".elders");
+			elders.remove(UUID);
+			config.set("guilds." + tagLower + ".elders", elders);
 			final List<String> members = config.getStringList("guilds." + tagLower + ".members");
 			members.add(UUID);
 			config.set("guilds." + tagLower + ".members", members);
@@ -314,6 +346,7 @@ public class GuildManager {
 	}
 	
 	public static void getInfo(Player player, String tag) {
+		String correctCaseTag = getGuildTag(tag.toLowerCase());
 		String tagLower = tag.toLowerCase();
 		String name = getGuildName(tagLower);
 		int level = getLevel(tagLower);
@@ -328,23 +361,23 @@ public class GuildManager {
 		else {
 			leaderName = (ChatColor.GRAY + "" + ChatColor.ITALIC + leaderName);
 		}
-		//Officers
-		List<String> officerList = getOfficerList(tagLower);
-		StringBuilder officers = new StringBuilder();
-		for (String officerUUID : officerList) {
-			OfflinePlayer offlineOfficer = Bukkit.getOfflinePlayer(UUID.fromString(officerUUID));
-			String officerName = offlineOfficer.getName();
-			if (offlineOfficer.isOnline()) {
-				officerName = (ChatColor.GREEN + "" + ChatColor.ITALIC + officerName);
+		//Elders
+		List<String> elderList = getElderList(tagLower);
+		StringBuilder elders = new StringBuilder();
+		for (String elderUUID : elderList) {
+			OfflinePlayer offlineElder = Bukkit.getOfflinePlayer(UUID.fromString(elderUUID));
+			String elderName = offlineElder.getName();
+			if (offlineElder.isOnline()) {
+				elderName = (ChatColor.GREEN + "" + ChatColor.ITALIC + elderName);
 			}
 			else {
-				officerName = (ChatColor.GRAY + "" + ChatColor.ITALIC + officerName);
+				elderName = (ChatColor.GRAY + "" + ChatColor.ITALIC + elderName);
 			}
-			officers.append(officerName + ChatColor.GRAY + "" + ChatColor.ITALIC + ", ");
+			elders.append(elderName + ChatColor.GRAY + "" + ChatColor.ITALIC + ", ");
 		}
-		String officersString = officers.toString();
-		officersString = StringUtils.chop(officersString);
-		officersString = StringUtils.chop(officersString);
+		String eldersString = elders.toString();
+		eldersString = StringUtils.chop(eldersString);
+		eldersString = StringUtils.chop(eldersString);
 		//Members
 		List<String> memberList = getMemberList(tagLower);
 		StringBuilder members = new StringBuilder();
@@ -388,13 +421,15 @@ public class GuildManager {
 		String alliesString = allies.toString();
 		alliesString = StringUtils.chop(alliesString);
 		alliesString = StringUtils.chop(alliesString);
-		player.sendMessage(ChatColor.BLUE + name + ChatColor.AQUA + ChatColor.ITALIC + " [" + tag + "]" + " (" + playerNumber + "/" + (level + 2) + ")");
+		player.sendMessage(ChatColor.GRAY + "" + ChatColor.STRIKETHROUGH + "---------------------");
+		player.sendMessage(ChatColor.BLUE + name + ChatColor.AQUA + ChatColor.ITALIC + " [" + correctCaseTag + "]" + " (" + playerNumber + "/" + (level + 2) + ")");
 		player.sendMessage(ChatColor.BLUE + "Level: " + ChatColor.GRAY + ChatColor.GRAY + ChatColor.ITALIC + level);
 		player.sendMessage(ChatColor.BLUE + "Allies: " + ChatColor.GRAY + ChatColor.ITALIC + alliesString);
 		player.sendMessage(ChatColor.BLUE + "Leader: " + leaderName);
-		player.sendMessage(ChatColor.BLUE + "Officers: " + officersString);
+		player.sendMessage(ChatColor.BLUE + "Elders: " + eldersString);
 		player.sendMessage(ChatColor.BLUE + "Members: " + membersString);
 		player.sendMessage(ChatColor.BLUE + "Recruits: " + recruitsString);
+		player.sendMessage(ChatColor.GRAY + "" + ChatColor.STRIKETHROUGH + "---------------------");
 	}
 	
 	public static void allyRemove (String tag, String rTag) {
@@ -437,7 +472,7 @@ public class GuildManager {
 	public static int getTotalPlayers(String tag) {
 		String tagLower = tag.toLowerCase();
 		int players = 1;
-		for (String player : config.getStringList("guilds." + tagLower + ".officers")) {
+		for (String player : config.getStringList("guilds." + tagLower + ".elders")) {
 			players = players + 1;
 		}
 		for (String player : config.getStringList("guilds." + tagLower + ".members")) {
@@ -508,14 +543,14 @@ public class GuildManager {
 		return false;
 	}
 	
-	public static boolean isOfficer(String UUID) {
+	public static boolean isElder(String UUID) {
 		ArrayList<String> guildTags = new ArrayList<String>();
 		for (String tag : config.getConfigurationSection("guilds").getKeys(false)) {
 			guildTags.add(tag);
 		}
 		for (String key : guildTags) {
-			for (Object officerUUID : config.getList("guilds." + key + ".officers")) {
-				if (officerUUID.equals(UUID)) {
+			for (Object elderUUID : config.getList("guilds." + key + ".elders")) {
+				if (elderUUID.equals(UUID)) {
 					return true;
 				}
 			}
@@ -540,9 +575,9 @@ public class GuildManager {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static List<String> getOfficerList(String tag) {
-		List<String> officers = (List<String>) config.getList("guilds." + tag + ".officers");
-		return officers;
+	public static List<String> getElderList(String tag) {
+		List<String> elders = (List<String>) config.getList("guilds." + tag + ".elders");
+		return elders;
 	}
 	
 	@SuppressWarnings("unchecked")

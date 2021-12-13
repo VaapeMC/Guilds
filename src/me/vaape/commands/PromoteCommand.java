@@ -37,12 +37,12 @@ Guilds plugin;
 							if (rRole.equals("leader")) {
 								player.sendMessage(ChatColor.RED + "You can not promote a leader.");
 							}
-							else if (rRole.equals("officer")) {
+							else if (rRole.equals("elder")) {
 								if (role.equals("leader")) {
 									player.sendMessage(ChatColor.RED + "To pass leadership of your guild, use /g leader [player]");
 								}
 								else {
-									player.sendMessage(ChatColor.RED + "You must be a leader to promote officers.");
+									player.sendMessage(ChatColor.RED + "You must be a leader to promote elders.");
 								}
 							}
 							else if (rRole.equals("member")) {
@@ -68,7 +68,7 @@ Guilds plugin;
 								}
 							}
 							else if (rRole.equals("recruit")) {
-								if (role.equals("leader") || role.equals("officer")) {
+								if (role.equals("leader") || role.equals("elder")) {
 									GuildManager.promote(rUUID, tagLower);
 									String newRole = GuildManager.getRole(rUUID);
 									String name = GuildManager.getGuildName(tag);
@@ -86,7 +86,7 @@ Guilds plugin;
 									}
 								}
 								else {
-									player.sendMessage(ChatColor.RED + "You must be a leader or an officer to promote recruits.");
+									player.sendMessage(ChatColor.RED + "You must be a leader or an elder to promote recruits.");
 								}
 							}
 						}

@@ -49,8 +49,11 @@ public class UpgradeCommand {
 						}
 					}
 					else {
-						player.sendMessage(ChatColor.RED + "You need " + (level + 1) + " dragon eggs to upgrade your guild.");
+						player.sendMessage(ChatColor.RED + "You must hold " + (level + 1) + " dragon eggs to upgrade your guild.");
 					}
+				}
+				else {
+					player.sendMessage(ChatColor.RED + "You must hold " + (level + 1) + " dragon eggs to upgrade your guild.");
 				}
 			}
 			else {

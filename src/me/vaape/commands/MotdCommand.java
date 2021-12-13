@@ -44,7 +44,7 @@ public class MotdCommand implements Listener{
 			}
 			else if (args.length > 1) {
 				if (args[1].equalsIgnoreCase("set")) {
-					if (GuildManager.isLeader(UUID) || GuildManager.isOfficer(UUID)) {
+					if (GuildManager.isLeader(UUID) || GuildManager.isElder(UUID)) {
 						if (args.length > 2) {
 							if (StringUtils.isNumeric(args[2])) {
 								int lineNumber = Integer.parseInt(args[2]);
@@ -99,11 +99,11 @@ public class MotdCommand implements Listener{
 						}
 					}
 					else {
-						player.sendMessage(ChatColor.RED + "You must be a leader or an officer to edit the guild MOTD.");
+						player.sendMessage(ChatColor.RED + "You must be a leader or an elder to edit the guild MOTD.");
 					}
 				}
 				else if (args[1].equalsIgnoreCase("add")) {
-					if (GuildManager.isLeader(UUID) || GuildManager.isOfficer(UUID)) {
+					if (GuildManager.isLeader(UUID) || GuildManager.isElder(UUID)) {
 						if (args.length > 2) {
 							if (motd.size() < level) {
 								StringBuilder lineBuilder = new StringBuilder();
@@ -142,11 +142,11 @@ public class MotdCommand implements Listener{
 						}
 					}
 					else {
-						player.sendMessage(ChatColor.RED + "You must be a leader or an officer to edit the guild MOTD.");
+						player.sendMessage(ChatColor.RED + "You must be a leader or an elder to edit the guild MOTD.");
 					}
 				}
 				else if (args[1].equalsIgnoreCase("del") || args[1].equalsIgnoreCase("delete") || args[1].equalsIgnoreCase("remove")) {
-					if (GuildManager.isLeader(UUID) || GuildManager.isOfficer(UUID)) {
+					if (GuildManager.isLeader(UUID) || GuildManager.isElder(UUID)) {
 						if (args.length > 2) {
 							if (StringUtils.isNumeric(args[2])) {
 								int lineNumber = Integer.parseInt(args[2]);
@@ -181,11 +181,11 @@ public class MotdCommand implements Listener{
 						}
 					}
 					else {
-						player.sendMessage(ChatColor.RED + "You must be a leader or an officer to edit the guild MOTD.");
+						player.sendMessage(ChatColor.RED + "You must be a leader or an elder to edit the guild MOTD.");
 					}
 				}
 				else if (args[1].equalsIgnoreCase("clear") || args[1].equalsIgnoreCase("wipe")) {
-					if (GuildManager.isLeader(UUID) || GuildManager.isOfficer(UUID)) {
+					if (GuildManager.isLeader(UUID) || GuildManager.isElder(UUID)) {
 						motd.clear();
 						plugin.getConfig().set("guilds." + tagLower + ".motd", motd);
 						List<Player> onlinePlayers = new ArrayList<Player>();
@@ -203,7 +203,7 @@ public class MotdCommand implements Listener{
 						plugin.saveConfig();
 					}
 					else {
-						player.sendMessage(ChatColor.RED + "You must be a leader or an officer to edit the guild MOTD.");
+						player.sendMessage(ChatColor.RED + "You must be a leader or an elder to edit the guild MOTD.");
 					}
 				}
 				else {

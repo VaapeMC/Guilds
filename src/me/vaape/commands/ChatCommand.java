@@ -11,6 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
+import me.vaape.events.Fishing;
 import me.vaape.guilds.GuildManager;
 import me.vaape.guilds.Guilds;
 import net.md_5.bungee.api.ChatColor;
@@ -109,7 +110,13 @@ public class ChatCommand implements CommandExecutor, Listener{
 				GuildManager.sendAllyMessage(player, tag, message);
 			}
 			else {
-				event.setFormat(ChatColor.GRAY + "[" + tag + "] %s" + ChatColor.WHITE + " %s");
+				if (Fishing.isWinner(player) || player.getName().equals("GrayFallacy")) {
+					String symbol = "\u2742";
+					event.setFormat(ChatColor.of("#9782b5") + "[" + tag + "] " + ChatColor.YELLOW + symbol + " %s" + ChatColor.WHITE + " %s");
+				}
+				else {
+					event.setFormat(ChatColor.of("#9782b5") + "[" + tag + "] %s" + ChatColor.WHITE + " %s");
+				}
 			}
 		}
 		else {
@@ -119,7 +126,13 @@ public class ChatCommand implements CommandExecutor, Listener{
 			if (allyChat.contains(UUID)) {
 				allyChat.remove(UUID);
 			}
-			event.setFormat("%s" + ChatColor.WHITE + " %s");
+			if (Fishing.isWinner(player)) {
+				String symbol = "\u2742";
+				event.setFormat(ChatColor.YELLOW + symbol + " %s" + ChatColor.WHITE + " %s"); //TODO SYMBOL
+			}
+			else {
+				event.setFormat("%s" + ChatColor.WHITE + " %s");
+			}
 		}
 	}	
 }

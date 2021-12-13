@@ -29,7 +29,7 @@ Guilds plugin;
 			}
 		}
 		else if (args.length > 1) {
-			if (GuildManager.getGuildTag(args[1]) == null) {
+			if (GuildManager.getGuildTag(args[1].toLowerCase()) == null) {
 				OfflinePlayer reciever = Bukkit.getOfflinePlayer(args[1]);
 				if (reciever.hasPlayedBefore() || reciever.isOnline()) {
 					String rUUID = reciever.getUniqueId().toString();

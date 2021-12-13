@@ -7,6 +7,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
+import me.vaape.events.Events;
+import me.vaape.events.GuildWars;
 import me.vaape.guilds.GuildManager;
 import me.vaape.guilds.Guilds;
 import net.md_5.bungee.api.ChatColor;
@@ -30,6 +32,13 @@ public class InviteAcceptCommand {
 			if (GuildManager.getPlayerGuildTag(UUID) == null) {
 				if (plugin.getConfig().getStringList("guilds." + tagLower + ".invited").contains(UUID)) {
 					if (totalPlayers < capacity) {
+						
+						//If player is already in guild
+						List<String> guildPlayers = GuildManager.getGuildPlayers(tag);
+						if (guildPlayers.contains(UUID)) {
+							
+						}
+						
 						final List<String> invited = Guilds.getInstance().getConfig().getStringList("guilds." + tagLower + ".invited");
 						invited.remove(UUID);
 						Guilds.getInstance().getConfig().set("guilds." + tagLower + ".invited", invited);
@@ -38,6 +47,13 @@ public class InviteAcceptCommand {
 						Guilds.getInstance().getConfig().set("guilds." + tagLower + ".recruits", recruits);
 						Guilds.getInstance().saveConfig();
 						Bukkit.getServer().broadcastMessage(ChatColor.BLUE + "[Guilds] " + ChatColor.YELLOW + player.getName() + " has joined " + name + ".");
+						
+						if (GuildWars.gwRunning) {
+							if (Events.getInstance().getConfig().getString("defenders").equals(tag)) {
+								GuildWars.holders.add(player.getUniqueId().toString());
+							}
+						}
+						
 						List<Player> onlinePlayers = new ArrayList<Player>();
 						for (Player p : Bukkit.getServer().getOnlinePlayers()) {
 							onlinePlayers.add(p);

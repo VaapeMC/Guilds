@@ -26,6 +26,10 @@ public class LeaveCommand {
 			String tagLower = tag.toLowerCase();
 			String name = GuildManager.getGuildName(tagLower);
 			if (GuildManager.getRole(UUID) != "leader") {
+				if (player.hasMetadata("royal")) {
+					player.sendMessage(ChatColor.RED + "The king can not leave their guild.");
+					return;
+				}
 				GuildManager.leaveGuild(UUID);
 				Bukkit.getServer().broadcastMessage(ChatColor.BLUE + "[Guilds] " + ChatColor.YELLOW + player.getName() + " has left " + name + ".");
 				List<Player> onlinePlayers = new ArrayList<Player>();

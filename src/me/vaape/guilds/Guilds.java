@@ -57,7 +57,7 @@ public class Guilds extends JavaPlugin {
 	public void loadConfiguration() {
 		final FileConfiguration config = this.getConfig();
 		String[] allyList = {"Gangs", "Myst"};
-		String[] officerList = {"05036bbe-f396-11e7-8c3f-9a214cf093ae", "05036fd8-f396-11e7-8c3f-9a214cf093ae"};
+		String[] elderList = {"05036bbe-f396-11e7-8c3f-9a214cf093ae", "05036fd8-f396-11e7-8c3f-9a214cf093ae"};
 		String[] memberList = {"050372b2-f396-11e7-8c3f-9a214cf093ae", "05037596-f396-11e7-8c3f-9a214cf093ae"};
 		String[] recruitList = {"05037898-f396-11e7-8c3f-9a214cf093ae", "05037b9a-f396-11e7-8c3f-9a214cf093ae"};
 		String[] inChestList = {"05037898-f396-11e7-8c3f-9a214cf093ae", "05037b9a-f396-11e7-8c3f-9a214cf093ae"};
@@ -71,7 +71,7 @@ public class Guilds extends JavaPlugin {
 		config.addDefault("guilds.guild.home.z", 10);
 		config.addDefault("guilds.guild.motd", "world");
 		config.addDefault("guilds.guild.leader", "1cc8faa2-f396-11e7-8c3f-9a214cf093ae");
-		config.addDefault("guilds.guild.officers", officerList);
+		config.addDefault("guilds.guild.elders", elderList);
 		config.addDefault("guilds.guild.members", memberList);
 		config.addDefault("guilds.guild.recruits", recruitList);
 		config.addDefault("guilds.guild.invited", "1cc8faa2-f396-11e7-8c3f-9a214cf093ae");

@@ -103,7 +103,7 @@ public class GuildCommand implements CommandExecutor{
 				motdCommand.executeMotdCommand(player, args);
 			}
 			else if (args[0].equalsIgnoreCase("chest")) {
-				chestCommand.executeChestCommand(player);
+				chestCommand.executeChestCommand(player, args);
 			}
 			else if (args[0].equalsIgnoreCase("list")) {
 				listCommand.executeListCommand(player, args);

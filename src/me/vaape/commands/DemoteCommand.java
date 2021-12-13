@@ -37,7 +37,7 @@ Guilds plugin;
 							if (rRole.equals("leader")) {
 								player.sendMessage(ChatColor.RED + "You can not demote a leader.");
 							}
-							else if (rRole.equals("officer")) {
+							else if (rRole.equals("elder")) {
 								if (role.equals("leader")) {
 									GuildManager.demote(rUUID, tagLower);
 									String newRole = GuildManager.getRole(rUUID);
@@ -56,11 +56,11 @@ Guilds plugin;
 									}
 								}
 								else {
-									player.sendMessage(ChatColor.RED + "You must be a leader to demote officers.");
+									player.sendMessage(ChatColor.RED + "You must be a leader to demote elders.");
 								}
 							}
 							else if (rRole.equals("member")) {
-								if (role.equals("leader") || role.equals("officer")) {
+								if (role.equals("leader") || role.equals("elder")) {
 									GuildManager.demote(rUUID, tagLower);
 									String newRole = GuildManager.getRole(rUUID);
 									String name = GuildManager.getGuildName(tag);
@@ -82,7 +82,7 @@ Guilds plugin;
 								}
 							}
 							else if (rRole.equals("recruit")) {
-								player.sendMessage(ChatColor.RED + "Recruits can not be demoted. To kick a player use /guild kick.");
+								player.sendMessage(ChatColor.RED + "Recruits can not be demoted. To kick a player use /g kick.");
 							}
 						}
 						else {

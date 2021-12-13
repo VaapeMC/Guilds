@@ -19,7 +19,7 @@ public class KickCommand {
 	public KickCommand(Guilds plugin) {
 		this.plugin = plugin;
 	}
-	
+	//TODO can't kick leaders/elders
 	@SuppressWarnings("deprecation")
 	public void executeKickCommand (Player player, String[] args) {
 		String UUID = player.getUniqueId().toString();
@@ -27,13 +27,13 @@ public class KickCommand {
 			String tag = GuildManager.getPlayerGuildTag(UUID);
 			String tagLower = tag.toLowerCase();
 			String name = GuildManager.getGuildName(tagLower);
-			if (GuildManager.isLeader(UUID) || GuildManager.isOfficer(UUID)) {
+			if (GuildManager.isLeader(UUID) || GuildManager.isElder(UUID)) {
 				if (args.length > 1) {
 					OfflinePlayer reciever = Bukkit.getOfflinePlayer(args[1]);
 					if (reciever.hasPlayedBefore() || reciever.isOnline()) {
 						String rUUID = reciever.getUniqueId().toString();
 						if (GuildManager.getPlayerGuildTag(rUUID) == tag) {
-							if (rUUID != UUID) {
+							if (GuildManager.isMember(rUUID) || GuildManager.isRecruit(rUUID)) {
 								GuildManager.kick(rUUID, tagLower);
 								Bukkit.getServer().broadcastMessage(ChatColor.BLUE + "[Guilds] " + ChatColor.YELLOW + reciever.getName() + " has been kicked from " + name + ".");
 								List<Player> onlinePlayers = new ArrayList<Player>();
@@ -49,7 +49,7 @@ public class KickCommand {
 								}
 							}
 							else {
-								player.sendMessage(ChatColor.RED + "You can not kick yourself.");
+								player.sendMessage(ChatColor.RED + "Elders may only kick members and recruits.");
 							}
 						}
 						else {
@@ -65,7 +65,7 @@ public class KickCommand {
 				}
 			}
 			else {
-				player.sendMessage(ChatColor.RED + "You must be a leader or an officer to kick players.");
+				player.sendMessage(ChatColor.RED + "You must be a leader or an elder to kick players.");
 			}
 		}
 		else {

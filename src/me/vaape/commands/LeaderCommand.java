@@ -34,7 +34,7 @@ Guilds plugin;
 						String rUUID = reciever.getUniqueId().toString();
 						if (GuildManager.getPlayerGuildTag(rUUID) == tag) {
 							if (rUUID != UUID) {
-								if (GuildManager.isOfficer(rUUID)) {
+								if (GuildManager.isElder(rUUID)) {
 									GuildManager.promote(rUUID, tag);
 									Bukkit.getServer().broadcastMessage(ChatColor.BLUE + "[Guilds] " + ChatColor.YELLOW + reciever.getName() + " is the new leader of " + name + ".");
 									List<Player> onlinePlayers = new ArrayList<Player>();
@@ -50,7 +50,7 @@ Guilds plugin;
 									}
 								}
 								else {
-									player.sendMessage(ChatColor.RED + "You can only pass ownership of the guild to officers.");
+									player.sendMessage(ChatColor.RED + "You can only pass ownership of the guild to elders.");
 								}
 							}
 							else {
