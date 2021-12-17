@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'maven-publish'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
 }
 
 group 'me.vaape'
@@ -17,9 +18,17 @@ repositories {
     }
 }
 
+shadowJar {
+    dependencies {
+        include(dependency('me.vaape.events:1.0.0'))
+        include(dependency('me.vaape.rewards:1.0.0'))
+    }
+}
+
 dependencies {
     compileOnly('org.spigotmc:spigot-api:1.17.1-R0.1-SNAPSHOT')
-    compileOnly('me.vaape:events:1.0.0')
+    implementation('me.vaape:events:1.0.0')
+    implementation('me.vaape:rewards:1.0.0')
 }
 
 publishing {
