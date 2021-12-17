@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'maven-publish'
 }
 
 group 'me.vaape'
@@ -7,4 +8,28 @@ version '1.0.0'
 
 repositories {
     mavenCentral()
+    mavenLocal()
+    maven {
+        url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+    }
+    maven {
+        url = "https://oss.sonatype.org/content/repositories/snapshots/"
+    }
+}
+
+dependencies {
+    compileOnly('org.spigotmc:spigot-api:1.17.1-R0.1-SNAPSHOT')
+    compileOnly('me.vaape:events:1.0.0')
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'me.vaape'
+            artifactId = 'guilds'
+            version = '1.0.0'
+
+            from components.java
+        }
+    }
 }
