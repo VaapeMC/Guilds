@@ -1,10 +1,10 @@
 package me.vaape.commands;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -238,7 +238,10 @@ public class ChestCommand implements Listener{
 					Bukkit.getServer().broadcastMessage(ChatColor.LIGHT_PURPLE + "viewers size was 0 (player was the last viewer)");
 
 					ItemStack[] contents = gChest.getContents();
-					plugin.getConfig().set("guilds." + tagLower + ".chest", contents);
+                    List<ItemStack> mappedContent = Arrays
+                            .stream(contents)
+                            .map(content -> Objects.requireNonNullElseGet(content, () -> new ItemStack(Material.AIR))).collect(Collectors.toList());
+                    plugin.getConfig().set("guilds." + tagLower + ".chest", mappedContent);
 				}
 				plugin.saveConfig();
 			}
