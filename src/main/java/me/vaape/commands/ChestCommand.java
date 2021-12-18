@@ -122,8 +122,8 @@ public class ChestCommand implements Listener{
 						//plugin.reloadConfig();
 						
 						Bukkit.getServer().broadcastMessage(ChatColor.DARK_PURPLE + "guilds."+tagLower+".chest = " + plugin.getConfig().get("guilds." + tagLower + ".chest").toString());
-						
-						List<ItemStack> contentsList = (List<ItemStack>) plugin.getConfig().getItemStack("guilds." + tagLower + ".chest");
+
+						List<ItemStack> contentsList = (List<ItemStack>) plugin.getConfig().get("guilds." + tagLower + ".chest");
 						ItemStack[] contents = new ItemStack[] {};
 						contents = contentsList.toArray(contents);
 						guildChest.setContents(contents);
