@@ -114,6 +114,7 @@ public class ChatCommand implements CommandExecutor, Listener{
 					String symbol = "\u2742";
 					event.setFormat(ChatColor.of("#9782b5") + "[" + tag + "] " + ChatColor.YELLOW + symbol + " %s" + ChatColor.WHITE + " %s");
 				}
+				
 				else {
 					event.setFormat(ChatColor.of("#9782b5") + "[" + tag + "] %s" + ChatColor.WHITE + " %s");
 				}
