@@ -110,7 +110,7 @@ public class ChatCommand implements CommandExecutor, Listener{
 				GuildManager.sendAllyMessage(player, tag, message);
 			}
 			else {
-				if (Fishing.isWinner(player) || player.getName().equals("GrayFallacy")) {
+				if (Fishing.isWinner(player) || player.getUniqueId().toString().equals("feea2f60-fb3f-40c0-8d42-8c3baa7b3278")) {
 					String symbol = "\u2742";
 					event.setFormat(ChatColor.of("#9782b5") + "[" + tag + "] " + ChatColor.YELLOW + symbol + " %s" + ChatColor.WHITE + " %s");
 				}
