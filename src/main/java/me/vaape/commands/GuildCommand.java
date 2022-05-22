@@ -11,6 +11,7 @@ import me.vaape.guilds.Guilds;
 public class GuildCommand implements CommandExecutor{
 
 	Guilds plugin;
+	ReloadCommand reloadCommand;
 	CreateCommand createCommand;
 	LeaveCommand leaveCommand;
 	UpgradeCommand upgradeCommand;
@@ -31,6 +32,7 @@ public class GuildCommand implements CommandExecutor{
 	HelpCommand helpCommand;
 	
 	public GuildCommand (Guilds passedPlugin) {
+		reloadCommand = new ReloadCommand(passedPlugin);
 		createCommand = new CreateCommand(passedPlugin);
 		leaveCommand = new LeaveCommand(passedPlugin);
 		upgradeCommand = new UpgradeCommand(passedPlugin);
@@ -57,7 +59,10 @@ public class GuildCommand implements CommandExecutor{
 		Player player = (Player) sender;	
 		
 		if (args.length > 0) {
-			if (args[0].equalsIgnoreCase("create")) {
+			if (args[0].equalsIgnoreCase("reload")) {
+				reloadCommand.executeReloadCommand(player);
+			}
+			else if (args[0].equalsIgnoreCase("create")) {
 				createCommand.executeCreateCommand(player, args);
 			}
 			else if (args[0].equalsIgnoreCase("leave")) {
@@ -85,7 +90,7 @@ public class GuildCommand implements CommandExecutor{
 				sethomeCommand.executeSethomeCommand(player);
 			}
 			else if (args[0].equalsIgnoreCase("home") || args[0].equalsIgnoreCase("h")) {
-				homeCommand.executeHomeCommand(player);
+				return homeCommand.executeHomeCommand(player);
 			}
 			else if (args[0].equalsIgnoreCase("disband")) {
 				disbandCommand.executeDisbandCommand(player);

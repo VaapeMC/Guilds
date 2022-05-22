@@ -22,7 +22,12 @@ import net.md_5.bungee.api.ChatColor;
 public class GuildManager {
 	
 	private static FileConfiguration config = Guilds.getInstance().getConfig();
-	
+
+	public static void reloadGuildConfig() {
+		Guilds.getInstance().reloadConfig();
+		config = Guilds.getInstance().getConfig();
+	}
+
 	public static String getPlayerGuildTag(String UUID){
 		ArrayList<String> guildTags = new ArrayList<String>();
 		for (String tag : config.getConfigurationSection("guilds").getKeys(false)) {
@@ -604,5 +609,13 @@ public class GuildManager {
 			guildTags.add(clanTag);
 		}
 		return guildTags;
+	}
+
+	public static void resetPlayersViewingChests() {
+		ArrayList<String> guildTags = getGuildTagList();
+		for (String tag : guildTags) {
+			config.set("guilds." + tag + ".players viewing chest", null);
+			Guilds.getInstance().saveConfig();
+		}
 	}
 }

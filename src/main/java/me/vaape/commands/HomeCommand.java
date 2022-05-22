@@ -28,7 +28,7 @@ public static Map<String, Integer> tasks = new HashMap<String, Integer>();
 		this.plugin = plugin;
 	}
 	
-	public void executeHomeCommand (Player player) {
+	public boolean executeHomeCommand (Player player) {
 		String UUID = player.getUniqueId().toString();
 		if (GuildManager.getPlayerGuildTag(UUID) != null) {
 			String tag = GuildManager.getPlayerGuildTag(UUID);
@@ -50,6 +50,7 @@ public static Map<String, Integer> tasks = new HashMap<String, Integer>();
 							}
 						}, 5 * 20);
 						tasks.put(UUID, home);
+						return true;
 					}
 					else {
 						player.sendMessage(ChatColor.RED + "Your guild does not have a guild home set. Use /g sethome to set a new one.");
@@ -66,6 +67,7 @@ public static Map<String, Integer> tasks = new HashMap<String, Integer>();
 		else {
 			player.sendMessage(ChatColor.RED + "You are not in a guild.");
 		}
+		return false;
 	}
 	
 	public void cancelRunnable(Player player) {
@@ -79,6 +81,8 @@ public static Map<String, Integer> tasks = new HashMap<String, Integer>();
 	@EventHandler
 	public void onMove (PlayerMoveEvent event) {
 		Player player = event.getPlayer();
+		String UUID = player.getUniqueId().toString();
+		if (!tasks.containsKey(UUID)) return;
 		Location from = event.getFrom();
 		Location to = event.getTo();
 		if ((Math.round(from.getX() * 100) / 100) == (Math.round(to.getX() * 100) /100) && //they can move 0.001 blocks
@@ -87,12 +91,9 @@ public static Map<String, Integer> tasks = new HashMap<String, Integer>();
 			return;
 		}
 		else {
-			String UUID = player.getUniqueId().toString();
-			if (tasks.containsKey(UUID)) {
-				cancelRunnable(player);
-				tasks.remove(UUID);
-				player.sendMessage(ChatColor.RED + "Teleport cancelled...");
-			}
+			cancelRunnable(player);
+			tasks.remove(UUID);
+			player.sendMessage(ChatColor.RED + "Teleport cancelled...");
 		}
 	}
 	

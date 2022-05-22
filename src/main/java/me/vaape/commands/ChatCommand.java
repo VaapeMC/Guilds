@@ -2,6 +2,8 @@ package me.vaape.commands;
 
 import java.util.ArrayList;
 
+import me.vaape.events.Events;
+import me.vaape.events.GuildWars;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -110,12 +112,19 @@ public class ChatCommand implements CommandExecutor, Listener{
 				GuildManager.sendAllyMessage(player, tag, message);
 			}
 			else {
-				if (Fishing.isWinner(player) || player.getName().equals("GrayFallacy")) {
-					String symbol = "\u2742";
-					event.setFormat(ChatColor.of("#9782b5") + "[" + tag + "] " + ChatColor.YELLOW + symbol + " %s" + ChatColor.WHITE + " %s");
+				String tagPrefix = "";
+				if (Events.getInstance().getConfig().getString("defenders").equals(tag)) {
+					tagPrefix = ChatColor.GOLD + "[" + tag + "] ";
 				}
 				else {
-					event.setFormat(ChatColor.of("#9782b5") + "[" + tag + "] %s" + ChatColor.WHITE + " %s");
+					tagPrefix = ChatColor.of("#9782b5") + "[" + tag + "] ";
+				}
+				if (Fishing.isWinner(player) || player.getName().equals("GrayFallacy")) {
+					String symbol = "\u2742";
+					event.setFormat(tagPrefix + ChatColor.YELLOW + symbol + " %s" + ChatColor.WHITE + " %s");
+				}
+				else {
+					event.setFormat(tagPrefix + "%s" + ChatColor.WHITE + " %s");
 				}
 			}
 		}

@@ -1,12 +1,16 @@
 package me.vaape.guilds;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.vaape.commands.ChatCommand;
@@ -27,7 +31,7 @@ public class Guilds extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		loadConfiguration();
-		getLogger().info(ChatColor.GREEN + "Guilds has been enabled!");
+		getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Guilds has been enabled!");
 		this.getCommand("guild").setExecutor(new GuildCommand(this));
 		this.getCommand("g").setExecutor(new GuildCommand(this));
 		this.getCommand("gc").setExecutor(new ChatCommand(this));
@@ -43,10 +47,37 @@ public class Guilds extends JavaPlugin {
 	    this.getServer().getPluginManager().registerEvents(chatCommand, instance);
 	    chestCommand = new ChestCommand(instance);
 	    this.getServer().getPluginManager().registerEvents(chestCommand, instance);
+
+		GuildManager.resetPlayersViewingChests(); //There is a bug where it keeps players in there so it wont open
 	}
 	
 	@Override
 	public void onDisable() {
+		//Save all g chest players
+		for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+			if (player.getOpenInventory() == null) return;
+			if (player.getOpenInventory().getType() != InventoryType.CHEST) return;
+
+			Inventory gChest = player.getOpenInventory().getTopInventory();
+			String chestTag = player.getOpenInventory().getTitle().substring(4);
+			String tagLower = chestTag.toLowerCase();
+			List<String> viewers = getInstance().getConfig().getStringList("guilds." + tagLower + ".players viewing chest");
+
+			if (viewers.contains(player.getUniqueId().toString())) {
+				viewers.remove(player.getUniqueId().toString());
+				getInstance().getConfig().set("guilds." + tagLower + ".players viewing chest", viewers);
+				Bukkit.getServer().broadcastMessage(ChatColor.AQUA + "removed player");
+				if (viewers.size() == 0) {
+					ItemStack[] contents = gChest.getContents();
+					List<ItemStack> mappedContent = Arrays
+							.stream(contents)
+							.map(content -> Objects.requireNonNullElseGet(content, () -> new ItemStack(Material.AIR))).collect(Collectors.toList());
+					getInstance().getConfig().set("guilds." + tagLower + ".chest", mappedContent);
+					Bukkit.getServer().broadcastMessage(ChatColor.AQUA + "saved chest");
+				}
+				getInstance().saveConfig();
+			}
+		}
 		instance = null;
 	}
 	
@@ -92,4 +123,6 @@ public class Guilds extends JavaPlugin {
 		}
 		saveConfig();
 	}
+
+
 }

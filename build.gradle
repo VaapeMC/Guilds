@@ -18,27 +18,9 @@ repositories {
     }
 }
 
-shadowJar {
-    dependencies {
-        include(dependency('me.vaape.events:1.0.0'))
-        include(dependency('me.vaape.rewards:1.0.0'))
-    }
-}
 
 dependencies {
-    compileOnly('org.spigotmc:spigot-api:1.18.1-R0.1-SNAPSHOT')
-    implementation('me.vaape:events:1.0.0')
-    implementation('me.vaape:rewards:1.0.0')
-}
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            groupId = 'me.vaape'
-            artifactId = 'guilds'
-            version = '1.0.0'
-
-            from components.java
-        }
-    }
+    compileOnly('org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT')
+    implementation files('libs/Rewards-1.0.0.jar')
+    implementation files('libs/Events-1.0.0.jar')
 }

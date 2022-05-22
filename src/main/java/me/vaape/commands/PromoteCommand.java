@@ -72,7 +72,7 @@ Guilds plugin;
 									GuildManager.promote(rUUID, tagLower);
 									String newRole = GuildManager.getRole(rUUID);
 									String name = GuildManager.getGuildName(tag);
-									Bukkit.getServer().broadcastMessage(ChatColor.BLUE + "[Guilds] " + ChatColor.YELLOW + reciever.getName() + " has been demoted to " + newRole + " in " + name + ".");
+									Bukkit.getServer().broadcastMessage(ChatColor.BLUE + "[Guilds] " + ChatColor.YELLOW + reciever.getName() + " has been promoted to " + newRole + " in " + name + ".");
 									List<Player> onlinePlayers = new ArrayList<Player>();
 									for (Player p : Bukkit.getServer().getOnlinePlayers()) {
 										onlinePlayers.add(p);

@@ -1,7 +1,7 @@
 name: Guilds
 main: me.vaape.guilds.Guilds
 version: 1.0
-api-version: 1.17
+api-version: 1.18
 commands:
   guild:
     description: Base guild command
